@@ -14,7 +14,7 @@ ProcessPaintData:
 ;  hl  =  mask data 
 ;--------------------------------------------------------------	
 	xor a
-.loop3
+.loop4
 	push af
 	
 	ld a, [hli]          ; load brush slot [1..27 | 0=inactive]
@@ -28,9 +28,7 @@ ProcessPaintData:
 	ld hl, BshSlots
 	add hl, bc	
 	ld a, [hl]           ; get brush id [0..5]	
-	REPT(4)
-		rlca             ; mul 16
-	ENDR
+	swap a               ; $0X --> $X0 [mul a, 16]
 	ld c, a
 	ld hl, Brush0
 	add hl, bc              	
@@ -80,8 +78,8 @@ ProcessPaintData:
 	
 	pop af
 	inc a
-	cp 3
-	jr nz, .loop3	
+	cp 4
+	jr nz, .loop4	
 	
 	; Increase de by 16 (go to next target) :
 	ld a, e
@@ -108,7 +106,7 @@ PaintTiles0:
 	ld de, PaintTmp
 	ld hl, TileMasks0	
 	
-	ld a, $39
+	ld a, $A1
 .loop
 	push af
 	call ProcessPaintData
@@ -124,7 +122,40 @@ PaintTiles0:
 	call loadMemorySTAT
 	;halt
 	ret
-;---------------------------------------------------PaintTiles0	
+;---------------------------------------------------PaintTiles0
+
+
+
+;-Func---------------------------------------------------------	
+PaintTiles1:
+;---------------------------------------------------PaintTiles1
+
+	; load cube 1 "blank" tiles into memory
+	ld hl, PaintTmp
+	ld de, Cube1Tiles
+	ld bc, $0B00
+	call loadMemory	
+	
+	ld de, PaintTmp
+	ld hl, TileMasks1
+	
+	ld a, $90
+.loop
+	push af
+	call ProcessPaintData
+	pop af
+	dec a
+	cp 0
+	jr nz, .loop
+	
+	
+	ld de, PaintTmp
+	ld bc, PaintTmp + $0B00 
+	ld hl, $8D00
+	call loadMemorySTAT
+	;halt
+	ret
+;---------------------------------------------------PaintTiles1
 	
 	
 	

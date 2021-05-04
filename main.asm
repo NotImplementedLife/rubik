@@ -27,7 +27,7 @@ Start:
 	
 	call waitForVBlank
 	ld a, %10010001 
-	;ld a, %10001001 
+	ld a, %10001001 
     ld [rLCDC], a	
 	ld a, %11100100
 	ld [rBGP], a		
@@ -36,15 +36,15 @@ Start:
 	
 		
 	call PaintTiles0
+	call PaintTiles1
 	;halt
 .loop	
 	REPT(100)
 	call waitForVBlank	
-	ENDR
-	;call PaintTiles0
+	ENDR	
 	ld a, [rLCDC]
 	xor %00011000
-	;ld [rLCDC], a		
+	ld [rLCDC], a		
     jp .loop    
 ;---------------------------------------------------------Start
 
