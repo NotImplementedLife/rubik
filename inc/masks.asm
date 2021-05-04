@@ -139,7 +139,7 @@ PaintTiles1:
 	ld de, PaintTmp
 	ld hl, TileMasks1
 	
-	ld a, $90
+	ld a, $85
 .loop
 	push af
 	call ProcessPaintData

@@ -484,7 +484,7 @@ DB $00 ; brush 4 inactive
 
 ; ~ $8410
 DB $07
-DB $ff, $ff, $fe, $fe, $f8, $f8, $f0, $f0, $e0, $e0, $80, $80, $00, $00, $00, $00
+DB $ff, $ff, $fe, $fe, $fc, $fc, $f0, $f0, $e0, $e0, $80, $80, $00, $00, $00, $00
 DB $09
 DB $00, $00, $00, $00, $00, $00, $00, $00, $03, $03, $07, $07, $1f, $1f, $3f, $3f
 DB $00
@@ -702,7 +702,7 @@ DB $00 ; brush 4 inactive
 
 ; ~ $85E0
 DB $13
-DB $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $7c, $7c
+DB $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc, $fc
 DB $00
 DB $00
 DB $00 ; brush 4 inactive
