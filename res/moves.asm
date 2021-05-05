@@ -1,5 +1,19 @@
 SECTION "MOVES_SWAPS", ROMX
 
+Rot4_dabc: MACRO
+	DB \4, \3
+	DB \3, \2
+	DB \2, \1
+	
+ENDM
+
+Rot4_bcda: MACRO
+	DB \1, \2
+	DB \2, \3
+	DB \3, \4
+	
+ENDM
+
 swaps_ML:
 swaps_HL:
 	DB $00, $03
@@ -117,5 +131,104 @@ swaps_HR:
 	DB $2E, $2F
 
 ; swaps_HR_End
+
+swaps_HL2:
+	Rot4_dabc $12, $18, $1A, $14
+	Rot4_dabc $13, $15, $19, $17
+	
+	Rot4_dabc $05, $0B, $35, $21
+	Rot4_dabc $07, $0E, $34, $1E
+	Rot4_dabc $08, $11, $32, $1B
+	
+	Rot4_dabc $02, $0A, $33, $22
+	Rot4_dabc $04, $0D, $31, $1F
+	Rot4_dabc $06, $10, $2F, $1C
+	
+	Rot4_dabc $00, $09, $30, $23
+	Rot4_dabc $01, $0C, $2E, $20
+	Rot4_dabc $03, $0F, $2D, $1D
+	
+	Rot4_dabc $24, $26, $2C, $2A
+	Rot4_dabc $25, $29, $2B, $27
+	
+swaps_HL2_END:
+
+swaps_HR2:
+	Rot4_bcda $12, $18, $1A, $14
+	Rot4_bcda $13, $15, $19, $17
+	
+	Rot4_bcda $05, $0B, $35, $21
+	Rot4_bcda $07, $0E, $34, $1E
+	Rot4_bcda $08, $11, $32, $1B
+	
+	Rot4_bcda $02, $0A, $33, $22
+	Rot4_bcda $04, $0D, $31, $1F
+	Rot4_bcda $06, $10, $2F, $1C
+	
+	Rot4_bcda $00, $09, $30, $23
+	Rot4_bcda $01, $0C, $2E, $20
+	Rot4_bcda $03, $0F, $2D, $1D
+	
+	Rot4_bcda $24, $26, $2C, $2A
+	Rot4_bcda $25, $29, $2B, $27
+	
+swaps_HR2_END:
+
+swaps_HL1:	
+	
+	Rot4_dabc $09, $0F, $11, $0B
+	Rot4_dabc $0A, $0C, $10, $0E
+	
+	Rot4_dabc $08, $26, $30, $18
+	Rot4_dabc $06, $29, $33, $15
+	Rot4_dabc $03, $2C, $35, $12
+	
+	Rot4_dabc $07, $25, $2E, $19
+	Rot4_dabc $04, $28, $31, $16
+	Rot4_dabc $01, $2B, $34, $13
+	
+	Rot4_dabc $05, $24, $2D, $1A
+	Rot4_dabc $02, $27, $2F, $17
+	Rot4_dabc $00, $2A, $32, $14
+	
+	Rot4_dabc $1B, $1D, $23, $21
+	Rot4_dabc $1E, $1C, $20, $22
+swaps_HL1_END:
+
+; To invert the rotation direction, reverse DBs:
+; E.g.
+;    Left              Right
+;   DB X,Y            DB Z,X
+;   DB Y,Z            DB Y,Z
+;   DB Z,X            DB X,Y
+;
+; possible memory optimization: on rotate right, 
+; parse bytes from swaps_AAA_END to swaps_AAA
+
+swaps_HR1:	
+	
+	Rot4_bcda $09, $0F, $11, $0B
+	Rot4_bcda $0A, $0C, $10, $0E
+	
+	Rot4_bcda $08, $26, $30, $18
+	Rot4_bcda $06, $29, $33, $15
+	Rot4_bcda $03, $2C, $35, $12
+	
+	Rot4_bcda $07, $25, $2E, $19
+	Rot4_bcda $04, $28, $31, $16
+	Rot4_bcda $01, $2B, $34, $13
+	
+	Rot4_bcda $05, $24, $2D, $1A
+	Rot4_bcda $02, $27, $2F, $17
+	Rot4_bcda $00, $2A, $32, $14
+	
+	Rot4_bcda $1B, $1D, $23, $21
+	Rot4_bcda $1E, $1C, $20, $22
+swaps_HR1_END:
+
+
+
+
+
 
 

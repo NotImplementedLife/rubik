@@ -17,12 +17,13 @@ SplashScreen:
 ;--------------------------------------------------SplashScreen
 
 
+
 ;-Entry--------------------------------------------------------	
 Start:	
 ;---------------------------------------------------------Start	
 	call initWRAM0	
 	
-	call waitForVBlank
+	call waitForVBlank	
 	ld a, %10010001 
 	;ld a, %10001001 
     ld [rLCDC], a	
@@ -39,18 +40,27 @@ Start:
 	call PaintTiles1
 	
 .loop	
-	REPT(100)
+	REPT(1)
 	call waitForVBlank	
 	ENDR	
-	call moveHR
-	call refreshBshSlots_Cube0
-	call PaintTiles0
-	ld a, [rLCDC]
-	;xor %00011000
-	ld [rLCDC], a		
+	call updateJoypadState
+	call ProcessInput
     jp .loop    
 ;---------------------------------------------------------Start
 
+
+;-Func--------------------------------------------------------	
+ProcessInput:
+;-------------------------------------------------ProcessInput
+	ld   a, [wJoypadPressed]
+	and a, PADF_LEFT		
+	call nz, performML
+	
+	ld   a, [wJoypadPressed]
+	and a, PADF_RIGHT	
+	call nz, performMR
+	ret
+;-------------------------------------------------ProcessInput
 
 
 ;--------------------------------------------------------------
@@ -75,6 +85,7 @@ INCLUDE "res/moves.asm"
 INCLUDE "../common/inc/vblank.asm"
 INCLUDE "../common/inc/memory.asm"
 INCLUDE "../common/inc/splash.asm"
+INCLUDE "../common/inc/input.asm"
 
 INCLUDE "inc/brush.asm"
 INCLUDE "inc/cube.asm"
