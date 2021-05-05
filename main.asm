@@ -28,21 +28,26 @@ Start:
 	;ld a, %10001001 
     ld [rLCDC], a	
 	ld a, %11100100
-	ld [rBGP], a		
+	ld [rBGP], a	
+	ld [rOBP0], a
+		
+	call CopyDMARoutine
+	
 	call copyCube0STAT
 	call copyCube1STAT
 	
 	call loadCubeState0	
 	call refreshBshSlots_Cube0
+	call PaintTiles0			
 	
-		
-	call PaintTiles0
-	call PaintTiles1
-	
-.loop	
-	REPT(1)
 	call waitForVBlank	
-	ENDR	
+	
+	call initOAM	
+	ld a, [rLCDC]
+	or LCDCF_OBJON
+	ldh [rLCDC], a
+.loop	
+	call waitForVBlank		
 	call updateJoypadState
 	call ProcessInput
     jp .loop    
@@ -80,15 +85,18 @@ INCLUDE "../common/res/AuthorCredit.asm"
 INCLUDE "res/cube.asm"
 INCLUDE "res/masks.asm"
 INCLUDE "res/moves.asm"
+INCLUDE "res/oam.asm"
 
 ; Routines
 INCLUDE "../common/inc/vblank.asm"
 INCLUDE "../common/inc/memory.asm"
 INCLUDE "../common/inc/splash.asm"
 INCLUDE "../common/inc/input.asm"
+INCLUDE "../common/inc/oam.asm"
 
 INCLUDE "inc/brush.asm"
 INCLUDE "inc/cube.asm"
 INCLUDE "inc/masks.asm"
 INCLUDE "inc/moves.asm"
+INCLUDE "inc/oam.asm"
 	
