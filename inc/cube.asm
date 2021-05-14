@@ -5,7 +5,6 @@ CubeState:
 SECTION "CUBE", ROM0
 
 CubeState0:
-	DB $00, $01, $02, $03, $04, $05, $02, $01, $00
 	REPT(9)
 		DB 0
 	ENDR

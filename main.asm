@@ -30,6 +30,8 @@ Start:
 	ld a, %11100100
 	ld [rBGP], a	
 	ld [rOBP0], a
+	ld a, $00
+	ld [rOBP1], a
 		
 	call CopyDMARoutine
 	
@@ -46,6 +48,9 @@ Start:
 	ld a, [rLCDC]
 	or LCDCF_OBJON
 	ldh [rLCDC], a
+		
+	call hideRotations
+	
 .loop	
 	call waitForVBlank		
 	call updateJoypadState
@@ -57,13 +62,24 @@ Start:
 ;-Func--------------------------------------------------------	
 ProcessInput:
 ;-------------------------------------------------ProcessInput
+
+	ld   a, [wJoypadPressed]
+	and a, PADF_SELECT	
+	call nz, nextRotDir
+	
+	ld   a, [wJoypadPressed]
+	and a, PADF_B
+	call nz, disableRot
+
 	ld   a, [wJoypadPressed]
 	and a, PADF_LEFT		
-	call nz, performML
+	call nz, handleLeftPressed
 	
 	ld   a, [wJoypadPressed]
 	and a, PADF_RIGHT	
-	call nz, performMR
+	call nz, handleRightPressed
+	
+	
 	ret
 ;-------------------------------------------------ProcessInput
 

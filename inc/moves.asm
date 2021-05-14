@@ -1,3 +1,10 @@
+SECTION "rotDir", WRAM0
+
+rotActive: 
+	DS 1
+rotDir: ; 0 = HL/HR  1 = HL1/HR1 2 = HL2/HR2
+	DS 1  
+
 SECTION "MOVES", ROM0
 
 swapCubeStates: MACRO
@@ -164,7 +171,168 @@ performMR:
 	ld [rLCDC], a	
 	ret
 	
+hideRotations:
+	ld hl, $FE03	
+	ld a, 9
+.loop
+	push af	
+	ld a, [hl]
+	and %11101111	
+	or %00010000
+	ld [hli], a	
+	inc hl
+	inc hl
+	inc hl		
+	pop af
+	dec a
+	cp a, 0	
+	jr nz, .loop
+	ret
+
+nextRotDir:
+	call hideRotations
 	
+	ld a, [rotActive]
+	cp a, 0
+	jr z, .skipRotDir
+	ld a, [rotDir]
+	inc a
+	cp a, 3
+	jr nz, .skip0
+	ld a, 0
+.skip0
+	ld [rotDir], a
+.skipRotDir
+	
+	
+	ld a, 1
+	ld [rotActive], a
+	
+	ld a, [rotDir]
+	cp a, 0	
+	jr nz, .skipR0
+	call showRot0
+	ret
+.skipR0
+	cp a, 1
+	jr nz, .skipR1
+	call showRot1
+	ret
+.skipR1
+	call showRot2		
+	ret
+	
+showRot0:
+	ld hl, $FE1B
+	ld a, 3
+.loop
+	push af	
+	ld a, [hl]
+	and %11101111	
+	ld [hli], a	
+	inc hl
+	inc hl
+	inc hl		
+	pop af
+	dec a
+	cp a, 0	
+	jr nz, .loop
+	ret
+	
+showRot1:
+	ld hl, $FE03
+	ld a, 3
+.loop
+	push af	
+	ld a, [hl]
+	and %11101111	
+	ld [hli], a	
+	inc hl
+	inc hl
+	inc hl		
+	pop af
+	dec a
+	cp a, 0	
+	jr nz, .loop
+	ret
+	
+showRot2:
+	ld hl, $FE0F
+	ld a, 3
+.loop
+	push af	
+	ld a, [hl]
+	and %11101111	
+	ld [hli], a	
+	inc hl
+	inc hl
+	inc hl		
+	pop af
+	dec a
+	cp a, 0	
+	jr nz, .loop
+	ret
+	
+disableRot:
+	ld a, 0
+	ld [rotActive], a
+	call hideRotations
+	ret
+	
+	
+handleLeftPressed:
+	ld a, [rotActive]
+	cp a, 0
+	jr nz, .hR
+	call performML
+	ret
+.hR
+	ld a, [rotDir]
+	cp a, 0	
+	jr nz, .skipR0
+	call moveHL
+	call refreshBshSlots_Cube0
+	call PaintTiles0	
+	ret
+.skipR0
+	cp a, 1
+	jr nz, .skipR1
+	call moveHL1
+	call refreshBshSlots_Cube0
+	call PaintTiles0	
+	ret
+.skipR1
+	call moveHL2	
+	call refreshBshSlots_Cube0
+	call PaintTiles0	
+	ret
+
+handleRightPressed:
+	ld a, [rotActive]
+	cp a, 0
+	jr nz, .hR
+	call performMR
+	ret
+.hR
+	ld a, [rotDir]
+	cp a, 0	
+	jr nz, .skipR0
+	call moveHR
+	call refreshBshSlots_Cube0
+	call PaintTiles0	
+	ret
+.skipR0
+	cp a, 1
+	jr nz, .skipR1
+	call moveHR1
+	call refreshBshSlots_Cube0
+	call PaintTiles0	
+	ret
+.skipR1
+	call moveHR2	
+	call refreshBshSlots_Cube0
+	call PaintTiles0	
+	ret
 	
 	
 	
