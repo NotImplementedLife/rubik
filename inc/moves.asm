@@ -276,6 +276,7 @@ showRot2:
 disableRot:
 	ld a, 0
 	ld [rotActive], a
+	ld [rotDir], a
 	call hideRotations
 	ret
 	
