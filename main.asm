@@ -13,27 +13,48 @@ SECTION "Main", ROM0
 SplashScreen:
 ;--------------------------------------------------SplashScreen
 	call doSplash	
-	jp Start	
+	jp TitleScreen
 ;--------------------------------------------------SplashScreen
 
 
+;-Entry--------------------------------------------------------	
+TitleScreen:
+;---------------------------------------------------TitleScreen
+	call copyTitleScreen
+	call waitForVBlank
+	ld a, %10010001 	
+    ld [rLCDC], a	
+	ld a, %11100100
+	ld [rBGP], a	
+	
+	call initInputWRAM	
+.loop
+	call waitForVBlank		
+	call updateJoypadState
+	ld a, [wJoypadPressed]
+	and a, PADF_START
+	jr z, .loop
+	call waitForVBlank	
+	ld a, %00000000
+	ld [rBGP], a		
+	call waitForVBlank
+	call clearVRAM
+	jr Start
+;---------------------------------------------------TitleScreen
 
 ;-Entry--------------------------------------------------------	
 Start:	
 ;---------------------------------------------------------Start	
-	call initWRAM0	
+	call initWRAM0		
 	
 	call waitForVBlank	
-	ld a, %10010001 
-	;ld a, %10001001 
-    ld [rLCDC], a	
-	ld a, %11100100
-	ld [rBGP], a	
+	ld a, %10010001 	
+    ld [rLCDC], a		
 	ld [rOBP0], a
 	ld a, $00
 	ld [rOBP1], a
 		
-	call CopyDMARoutine
+	call CopyDMARoutine	
 	
 	call copyCube0STAT
 	call copyCube1STAT
@@ -43,6 +64,8 @@ Start:
 	call PaintTiles0			
 	
 	call waitForVBlank	
+	ld a, %11100100
+	ld [rBGP], a	
 	
 	call initOAM	
 	ld a, [rLCDC]
@@ -101,6 +124,7 @@ INCLUDE "../common/res/AuthorCredit.asm"
 INCLUDE "res/cube.asm"
 INCLUDE "res/masks.asm"
 INCLUDE "res/moves.asm"
+INCLUDE "res/titlescreen.asm"
 INCLUDE "res/oam.asm"
 
 ; Routines
