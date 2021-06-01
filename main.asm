@@ -118,8 +118,6 @@ ProcessInput:
 INCLUDE "header.asm"
 
 ; Resources
-INCLUDE "../common/res/HomebrewOwlLogo.asm"
-INCLUDE "../common/res/AuthorCredit.asm"
 
 INCLUDE "res/cube.asm"
 INCLUDE "res/masks.asm"
