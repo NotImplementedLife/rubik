@@ -35,6 +35,24 @@ TitleScreen:
 	and a, PADF_START
 	jr z, .loop
 	call waitForVBlank	
+	
+	xor a
+	ld [Gamemode], a
+	
+	ld hl, $8AF0
+	ld de, TitleOptionsTiles
+	ld bc, TitleOptionsTiles + 16*26
+	call loadMemorySTAT		
+	
+.chooseGamemode
+	call updateJoypadState
+	call SetGamemode
+	ld  a, [wJoypadPressed]
+	and a, PADF_A
+	jr z, .chooseGamemode	
+	
+	
+	
 	ld a, %00000000
 	ld [rBGP], a		
 	call waitForVBlank
@@ -81,6 +99,45 @@ Start:
     jp .loop    
 ;---------------------------------------------------------Start
 
+;-Func--------------------------------------------------------	
+SetGamemode:
+;--------------------------------------------------SetGamemode
+	ld   a, [wJoypadPressed]
+	and a, PADF_UP
+	jr nz, .upPressed 
+	ld   a, [wJoypadPressed]
+	and a, PADF_DOWN
+	jr nz, .downPressed
+	ret z
+.upPressed:
+	ld a, [Gamemode]
+	dec a
+	and 1
+	jr .fin
+.downPressed:
+	ld a, [Gamemode]
+	inc a
+	and 1
+.fin:
+	ld [Gamemode], a
+	cp a, 0
+	jr z, .setNormal
+	cp a, 1
+	jr z, .setFreeStyle
+	
+.setNormal:
+	ld hl, $8AF0
+	ld de, TitleOptionsTiles
+	ld bc, TitleOptionsTiles + 16*26
+	call loadMemorySTAT		
+	ret
+.setFreeStyle:
+	ld hl, $8AF0
+	ld de, TitleOptionsTiles + 16*26
+	ld bc, TitleOptionsTiles + 2*16*26
+	call loadMemorySTAT		
+	ret
+;--------------------------------------------------SetGamemode
 
 ;-Func--------------------------------------------------------	
 ProcessInput:
@@ -123,6 +180,7 @@ INCLUDE "res/cube.asm"
 INCLUDE "res/masks.asm"
 INCLUDE "res/moves.asm"
 INCLUDE "res/titlescreen.asm"
+INCLUDE "res/titleoptions.asm"
 INCLUDE "res/oam.asm"
 
 ; Routines
@@ -136,5 +194,6 @@ INCLUDE "inc/brush.asm"
 INCLUDE "inc/cube.asm"
 INCLUDE "inc/masks.asm"
 INCLUDE "inc/moves.asm"
+INCLUDE "inc/titleoptions.asm"
 INCLUDE "inc/oam.asm"
 	
