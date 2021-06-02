@@ -20,6 +20,8 @@ SplashScreen:
 ;-Entry--------------------------------------------------------	
 TitleScreen:
 ;---------------------------------------------------TitleScreen
+	call initWRAM0
+	
 	call copyTitleScreen
 	call waitForVBlank
 	ld a, %10010001 	
@@ -51,8 +53,19 @@ TitleScreen:
 	and a, PADF_A
 	jr z, .chooseGamemode	
 	
+	call loadCubeState0	
+	call refreshBshSlots_Cube0
+	ld a, [Gamemode]
+	cp 0 ; Normal
+	jr nz, .fin
+	call moveML
+	call moveML
+	call moveHR1
+	call moveML
+	; and other random stuff
+	call refreshBshSlots_Cube0
 	
-	
+.fin:
 	ld a, %00000000
 	ld [rBGP], a		
 	call waitForVBlank
@@ -62,8 +75,7 @@ TitleScreen:
 
 ;-Entry--------------------------------------------------------	
 Start:	
-;---------------------------------------------------------Start	
-	call initWRAM0		
+;---------------------------------------------------------Start			
 	
 	call waitForVBlank	
 	ld a, %10010001 	
@@ -77,8 +89,8 @@ Start:
 	call copyCube0STAT
 	call copyCube1STAT
 	
-	call loadCubeState0	
-	call refreshBshSlots_Cube0
+	;call loadCubeState0	
+	;call refreshBshSlots_Cube0
 	call PaintTiles0			
 	
 	call waitForVBlank	
