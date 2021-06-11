@@ -33,6 +33,11 @@ Use `Left`/`Right` to rotate the top layer in the corresponding direction. This 
 Got stuck and want to try again? There is no such a feature currently. Just power off/on your Gameboy/reset your emulator.
 No reward for solving the cube currently. Not even a `Well done!` message. This will be probably added in one of the next versions.
 
+There are two game modes :
+
+- Normal : the program shuffles the cube and you have to solve it;
+- Freestyle : start from an already solved cube and try to experiment things and learn techniques in your own way.
+
 <b>Game tests are required</b> to assure the mechanics correctitude and reliability (for example, detect and solve a wrong color mapping on cube rotation). Preferably by someone who has a bit of experience with solving this little thing. (Yeah, you got me: I suck at puzzles and strategy games :) ). Help & advice from anyone would be greatly appreciated.
 
 ## Screenshots
