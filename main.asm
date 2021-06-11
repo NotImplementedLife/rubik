@@ -47,6 +47,10 @@ TitleScreen:
 	call loadMemorySTAT		
 	
 .chooseGamemode
+	ld a, [GenerationSeed]
+	inc a
+	ld [GenerationSeed], a
+	
 	call updateJoypadState
 	call SetGamemode
 	ld  a, [wJoypadPressed]
@@ -58,10 +62,8 @@ TitleScreen:
 	ld a, [Gamemode]
 	cp 0 ; Normal
 	jr nz, .fin
-	call moveML
-	call moveML
-	call moveHR1
-	call moveML
+	
+	call shuffle	
 	; and other random stuff
 	call refreshBshSlots_Cube0
 	
@@ -175,6 +177,63 @@ ProcessInput:
 	ret
 ;-------------------------------------------------ProcessInput
 
+;-Func--------------------------------------------------------	
+shuffle:
+;------------------------------------------------------shuffle
+	ld e, 50
+	ld a, [GenerationSeed]		
+.loop:		
+	add a, 27	
+	ld d, a		
+	push de
+	
+	ld a, d
+	and %0011100
+	srl a
+	srl a	
+	cp 0
+	push af
+	call z, moveML
+	pop af
+	cp 1
+	push af
+	call z, moveHR
+	pop af
+	cp 2
+	push af
+	call z, moveHL1
+	pop af
+	cp 3
+	push af
+	call z, moveMR
+	pop af
+	cp 4
+	push af
+	call z, moveHL2
+	pop af
+	cp 5
+	push af
+	call z, moveHR2
+	pop af
+	cp 6
+	push af
+	call z, moveHL
+	pop af
+	cp 7
+	push af
+	call z, moveHR1
+	pop af
+.skipH			
+	pop de	
+	
+	ld a, e
+	dec a
+	or a
+	ld e, a
+	ld a, d
+	jr nz, .loop	
+	ret
+;------------------------------------------------------shuffle
 
 ;--------------------------------------------------------------
 ;--------------------------------------------------------------
