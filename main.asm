@@ -13,6 +13,7 @@ SECTION "Main", ROM0
 SplashScreen:
 ;--------------------------------------------------SplashScreen
 	call doSplash	
+	call CopyDMARoutine
 	jp TitleScreen
 ;--------------------------------------------------SplashScreen
 
@@ -20,7 +21,14 @@ SplashScreen:
 ;-Entry--------------------------------------------------------	
 TitleScreen:
 ;---------------------------------------------------TitleScreen
+	xor a
+	ld [rBGP], a
 	call initWRAM0
+	
+	ld hl, SpritesData
+	ld de, ArrowsData
+	ld bc, 160
+	call loadMemory
 	
 	call copyTitleScreen
 	call waitForVBlank
@@ -63,16 +71,20 @@ TitleScreen:
 	cp 0 ; Normal
 	jr nz, .fin
 	
-	call shuffle	
-	; and other random stuff
+	call shuffle		
 	call refreshBshSlots_Cube0
-	
+		
 .fin:
+	; create CubeState backup	
+	ld hl, CubeStateBackup
+	ld de, CubeState
+	ld bc, 54	
+	call loadMemory
 	ld a, %00000000
 	ld [rBGP], a		
 	call waitForVBlank
 	call clearVRAM
-	jr Start
+	;jr Start
 ;---------------------------------------------------TitleScreen
 
 ;-Entry--------------------------------------------------------	
@@ -85,15 +97,13 @@ Start:
 	ld [rOBP0], a
 	ld a, $00
 	ld [rOBP1], a
-		
-	call CopyDMARoutine	
 	
 	call copyCube0STAT
 	call copyCube1STAT
 	
 	;call loadCubeState0	
 	;call refreshBshSlots_Cube0
-	call PaintTiles0			
+	call PaintTiles0
 	
 	call waitForVBlank	
 	ld a, %11100100
@@ -110,8 +120,76 @@ Start:
 	call waitForVBlank		
 	call updateJoypadState
 	call ProcessInput
-    jp .loop    
+    jr .loop    
 ;---------------------------------------------------------Start
+
+;-Entry--------------------------------------------------------	
+Pause:
+;---------------------------------------------------------Pause
+	call PauseMenuInit
+	ld hl, SpritesData
+	ld de, PauseMenuData
+	ld bc, 160
+	call loadMemory
+	call waitForVBlank
+	call initOAM
+.loop
+	call waitForVBlank
+	call updateJoypadState
+	ld a, [wJoypadPressed]
+	and a, PADF_DOWN
+	call nz, PauseMenuDown
+	ld a, [wJoypadPressed]
+	and a, PADF_UP	
+	call nz, PauseMenuUp
+	
+	ld a, [wJoypadPressed]
+	and a, PADF_B
+	jr nz, .justLeavePauseMenu
+	
+	ld a, [wJoypadPressed]
+	and a, PADF_A
+	jr z, .loop
+		
+	ld hl, SpritesData
+	ld de, ArrowsData
+	ld bc, 160
+	call loadMemory
+	call waitForVBlank
+	call initOAM
+	call hideRotations
+	
+	ld a, [pmCrtSelected]
+	cp 2
+	jp z, TitleScreen
+	cp 1
+	jp nz, Start.loop
+		
+	; Restore backup
+	ld hl, CubeState
+	ld de, CubeStateBackup
+	ld bc, 54
+	call loadMemory
+	
+	call refreshBshSlots_Cube0
+	call PaintTiles0	
+	
+	jp Start.loop
+		
+.justLeavePauseMenu
+	;restore sprites	
+	ld hl, SpritesData
+	ld de, ArrowsData
+	ld bc, 160
+	call loadMemory
+	call waitForVBlank
+	call initOAM
+	call hideRotations		
+	
+	jp Start.loop
+	
+		
+;---------------------------------------------------------Pause
 
 ;-Func--------------------------------------------------------	
 SetGamemode:
@@ -119,7 +197,7 @@ SetGamemode:
 	ld   a, [wJoypadPressed]
 	and a, PADF_UP
 	jr nz, .upPressed 
-	ld   a, [wJoypadPressed]
+	ld a, [wJoypadPressed]
 	and a, PADF_DOWN
 	jr nz, .downPressed
 	ret z
@@ -173,8 +251,14 @@ ProcessInput:
 	and a, PADF_RIGHT	
 	call nz, handleRightPressed
 	
+	ld a, [wJoypadPressed]
+	and a, PADF_START	
 	
+	jr nz, .launchPause			
 	ret
+.launchPause
+	pop bc   ; immitate ret without exiting function
+	jp Pause ; leave function, but jump execute pause menu logic
 ;-------------------------------------------------ProcessInput
 
 ;-Func--------------------------------------------------------	
@@ -235,6 +319,7 @@ shuffle:
 	ret
 ;------------------------------------------------------shuffle
 
+
 ;--------------------------------------------------------------
 ;--------------------------------------------------------------
 ;                         Dependencies
@@ -265,6 +350,7 @@ INCLUDE "inc/brush.asm"
 INCLUDE "inc/cube.asm"
 INCLUDE "inc/masks.asm"
 INCLUDE "inc/moves.asm"
+INCLUDE "inc/pausemenu.asm"
 INCLUDE "inc/titleoptions.asm"
 INCLUDE "inc/oam.asm"
 	

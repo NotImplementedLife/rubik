@@ -1,6 +1,9 @@
 SECTION "CUBE_HVARS", WRAM0, ALIGN[8]
 CubeState:
 	DS 54
+	
+CubeStateBackup:
+	DS 54
 
 SECTION "CUBE", ROM0
 
