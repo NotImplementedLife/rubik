@@ -1,6 +1,5 @@
 INCLUDE "../common/macros.inc"
 
-
 ;--------------------------------------------------------------
 ;--------------------------------------------------------------
 ;                         Main SECTION
@@ -28,7 +27,7 @@ TitleScreen:
 	ld hl, SpritesData
 	ld de, ArrowsData
 	ld bc, 160
-	call loadMemory
+	call loadMemory	
 	
 	call copyTitleScreen
 	call waitForVBlank
@@ -109,12 +108,13 @@ Start:
 	ld a, %11100100
 	ld [rBGP], a	
 	
-	call initOAM	
+	initOAM SpritesData	
+	
 	ld a, [rLCDC]
 	or LCDCF_OBJON
 	ldh [rLCDC], a
 		
-	call hideRotations
+	call hideRotations	
 	
 .loop	
 	call waitForVBlank		
@@ -132,7 +132,7 @@ Pause:
 	ld bc, 160
 	call loadMemory
 	call waitForVBlank
-	call initOAM
+	initOAM SpritesData
 .loop
 	call waitForVBlank
 	call updateJoypadState
@@ -156,7 +156,7 @@ Pause:
 	ld bc, 160
 	call loadMemory
 	call waitForVBlank
-	call initOAM
+	initOAM SpritesData
 	call hideRotations
 	
 	ld a, [pmCrtSelected]
@@ -183,7 +183,7 @@ Pause:
 	ld bc, 160
 	call loadMemory
 	call waitForVBlank
-	call initOAM
+	initOAM SpritesData
 	call hideRotations		
 	
 	jp Start.loop
@@ -234,7 +234,13 @@ SetGamemode:
 ;-Func--------------------------------------------------------	
 ProcessInput:
 ;-------------------------------------------------ProcessInput
-
+	ld a, [rotCooldown]		
+	or a
+	jr nz, .proceed
+	dec a
+	ld [rotCooldown], a
+	ret
+.proceed
 	ld   a, [wJoypadPressed]
 	and a, PADF_SELECT	
 	call nz, nextRotDir
@@ -352,5 +358,4 @@ INCLUDE "inc/masks.asm"
 INCLUDE "inc/moves.asm"
 INCLUDE "inc/pausemenu.asm"
 INCLUDE "inc/titleoptions.asm"
-INCLUDE "inc/oam.asm"
 	

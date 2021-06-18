@@ -4,6 +4,8 @@ rotActive:
 	DS 1
 rotDir: ; 0 = HL/HR  1 = HL1/HR1 2 = HL2/HR2
 	DS 1  
+rotCooldown:
+	DS 1
 
 SECTION "MOVES", ROM0
 
@@ -171,15 +173,15 @@ performMR:
 	ld [rLCDC], a	
 	ret
 	
-hideRotations:
-	ld hl, $FE03	
+hideRotations:	
+	ld hl, SpritesData + 3
 	ld a, 9
 .loop
-	push af	
+	push af		
 	ld a, [hl]
 	and %11101111	
-	or %00010000
-	ld [hli], a	
+	or %00010000	
+	ld [hli], a			
 	inc hl
 	inc hl
 	inc hl		
@@ -187,9 +189,13 @@ hideRotations:
 	dec a
 	cp a, 0	
 	jr nz, .loop
+	initOAM SpritesData
 	ret
 
 nextRotDir:
+	;ld b,b
+	ld a, 255
+	ld [rotCooldown], a
 	call hideRotations
 	
 	ld a, [rotActive]
@@ -223,7 +229,7 @@ nextRotDir:
 	ret
 	
 showRot0:
-	ld hl, $FE1B
+	ld hl, SpritesData + $1B
 	ld a, 3
 .loop
 	push af	
@@ -237,10 +243,11 @@ showRot0:
 	dec a
 	cp a, 0	
 	jr nz, .loop
+	initOAM SpritesData
 	ret
 	
 showRot1:
-	ld hl, $FE03
+	ld hl, SpritesData + $03
 	ld a, 3
 .loop
 	push af	
@@ -254,10 +261,11 @@ showRot1:
 	dec a
 	cp a, 0	
 	jr nz, .loop
+	initOAM SpritesData
 	ret
 	
 showRot2:
-	ld hl, $FE0F
+	ld hl, SpritesData + $0F
 	ld a, 3
 .loop
 	push af	
@@ -271,6 +279,7 @@ showRot2:
 	dec a
 	cp a, 0	
 	jr nz, .loop
+	initOAM SpritesData
 	ret
 	
 disableRot:

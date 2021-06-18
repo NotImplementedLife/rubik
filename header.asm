@@ -24,8 +24,7 @@ SECTION "Restart $30", ROM0[$30]
 SECTION "Restart $38", ROM0[$38]
   jp $100
 
-SECTION "V-Blank Interrupt", ROM0[$40]
-  jp waitForVBlank
+;SECTION "V-Blank Interrupt", ROM0[$40]  
 
 SECTION "Status Interrupt", ROM0[$48]
   reti
