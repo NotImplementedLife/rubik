@@ -233,16 +233,10 @@ SetGamemode:
 
 ;-Func--------------------------------------------------------	
 ProcessInput:
-;-------------------------------------------------ProcessInput
-	ld a, [rotCooldown]		
-	or a
-	jr nz, .proceed
-	dec a
-	ld [rotCooldown], a
-	ret
-.proceed
+;-------------------------------------------------ProcessInput		
 	ld   a, [wJoypadPressed]
-	and a, PADF_SELECT	
+	and a, PADF_SELECT
+	
 	call nz, nextRotDir
 	
 	ld   a, [wJoypadPressed]
@@ -258,12 +252,14 @@ ProcessInput:
 	call nz, handleRightPressed
 	
 	ld a, [wJoypadPressed]
-	and a, PADF_START	
+	and a, PADF_START			
 	
 	jr nz, .launchPause			
 	ret
 .launchPause
 	pop bc   ; immitate ret without exiting function
+	xor a
+	ld [rotActive], a ; disable hard rotations
 	jp Pause ; leave function, but jump execute pause menu logic
 ;-------------------------------------------------ProcessInput
 

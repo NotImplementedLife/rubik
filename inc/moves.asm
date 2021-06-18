@@ -192,16 +192,19 @@ hideRotations:
 	initOAM SpritesData
 	ret
 
-nextRotDir:
-	;ld b,b
-	ld a, 255
-	ld [rotCooldown], a
+nextRotDir:	
 	call hideRotations
 	
 	ld a, [rotActive]
 	cp a, 0
 	jr z, .skipRotDir
-	ld a, [rotDir]
+	ld a, [rotDir]	
+	ld d, d    
+	jr .end
+    DW $6464
+    DW $0000
+    DB "This is a debug message! A register: %A%"
+.end
 	inc a
 	cp a, 3
 	jr nz, .skip0
@@ -209,7 +212,6 @@ nextRotDir:
 .skip0
 	ld [rotDir], a
 .skipRotDir
-	
 	
 	ld a, 1
 	ld [rotActive], a
