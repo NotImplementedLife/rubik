@@ -1,5 +1,7 @@
+INCLUDE "src/include/macros.inc"
+
 SECTION "Header", ROM0[$100]
-	di
+	nop
 	jp EntryPoint
 	
 	DS $150 - @, 0
@@ -8,4 +10,7 @@ SECTION "Entry point", ROM0
 
 EntryPoint:
 	call HbOwlSplashScreen
-	jr @
+	call CopyDMARoutine
+	ei
+	vBlankInit
+	jp TitleScreen

@@ -34,7 +34,7 @@ MBC := 0x00
 SRAMSIZE := 0x00
 
 # ROM name
-ROMNAME := rubik-1.$(VERSION)
+ROMNAME := rubik_1_$(VERSION)
 ROMEXT  := gb
 
 

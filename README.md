@@ -3,7 +3,7 @@
 _Why Can't I Find An Intuitive Usage For The Tiles?_
 
 This repo is part of [HomebrewOwl.GB](https://github.com/NotImplementedLife/HomebrewOwl.GB "HomebrewOwl") projects collection.
-Download the latest version [here](https://github.com/NotImplementedLife/rubik/releases/download/1.2/rubik_1_2.gb)
+Download the latest version [here](https://github.com/NotImplementedLife/rubik/releases/download/1.3/rubik_1_3.gb).
 
 Uh, well... So, I made a Rubik's cube simulator on Gameboy. _`Cause why not?_ Whoo ```>^•^<```
 
