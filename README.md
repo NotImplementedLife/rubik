@@ -27,6 +27,18 @@ Except the fact that, without the warm-hearted GBDev community and its immeasura
 
 But, despite any difficulty which showed up during this project, I assertively kept working on it, because, after all, it was extremely fun.
 
+## How to build
+
+```
+git clone https://github.com/NotImplementedLife/rubik --recursive
+```
+
+```
+cd rubik
+make
+```
+Make sure RGBDS is installed and exists in your `%PATH%`.
+
 ## How to play
 
 Use `Left`/`Right` to rotate the top layer in the corresponding direction. This is the only layer the player can move. In order to move another layer, the player needs to bring it to the top by rotating the cube. This can be done by pressing `Select`. Some circular arrows will appear. They show the axis around which the cube will be rotated. Press `Select` again in order to reveal other pair of circular arrows. Press `Left`/`Right` to move the cube around the chosen axis. Press `B` to hide the circular arrows and the top layer can be rotated again.
@@ -54,3 +66,7 @@ There are two game modes :
 <img src="README_Resources/ss3.png"></img>
 
 <img src="README_Resources/ss5.png"></img>
+
+## Linked
+
+- [HomebrewOwl.GB](https://github.com/NotImplementedLife/HomebrewOwl.GB "HomebrewOwl.GB") - check out my other Gameboy projects
